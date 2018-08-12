@@ -5,8 +5,13 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Bot extends TelegramLongPollingBot  {
 
@@ -42,11 +47,36 @@ public class Bot extends TelegramLongPollingBot  {
             }
 
             try {
+                setButtons(message);
                 execute(message);
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setButtons(SendMessage message) {
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        message.setReplyMarkup(replyKeyboardMarkup);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(false);
+
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        //first line of the keyboard
+        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        keyboardFirstRow.add("/help");
+        keyboardFirstRow.add("/settings");
+
+        //second line of the keyboard
+        KeyboardRow keyboardSecondRow = new KeyboardRow();
+        keyboardSecondRow.add("Команда 3");
+        keyboardSecondRow.add("Команда 4");
+
+        keyboardRows.add(keyboardFirstRow);
+        keyboardRows.add(keyboardSecondRow);
+
+        replyKeyboardMarkup.setKeyboard(keyboardRows);
     }
 
     @Override
