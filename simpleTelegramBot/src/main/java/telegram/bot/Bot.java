@@ -16,27 +16,23 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
-            // Set variables
             String message_text = update.getMessage().getText();
-            long chat_id = update.getMessage().getChatId();
-            SendMessage message = new SendMessage();    // Create a SendMessage object with mandatory fields
+            SendMessage message = new SendMessage()     // Create a SendMessage object with mandatory fields
+                    .setChatId(update.getMessage().getChatId());
 
             switch (message_text) {
                 case "/time":
-                    message.setChatId(chat_id)
-                            .setText(LocalTime.now().truncatedTo(ChronoUnit.SECONDS).toString());
+                    message.setText(LocalTime.now().truncatedTo(ChronoUnit.SECONDS).toString());
                     break;
                 case "/date":
-                    message.setChatId(chat_id)
-                            .setText(LocalDate.now().toString());
+                    message.setText(LocalDate.now().toString());
                     break;
                 case "/datetime":
-                    message.setChatId(chat_id)
-                            .setText(String.join(" ", LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString().split("T")));
+                    message.setText(String.join(" ",
+                            LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString().split("T")));
                     break;
                 default:
-                    message.setChatId(chat_id)
-                            .setText("Hello, " + message_text);
+                    message.setText("Hello, " + message_text);
                     break;
             }
 
