@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class Bot extends TelegramLongPollingBot  {
 
     @Override
     public void onUpdateReceived(Update update) {
+        Model model = new Model();
         // We check if the update has a message and the message has text
         if (update.hasMessage() && update.getMessage().hasText()) {
             String message_text = update.getMessage().getText();
@@ -42,7 +44,11 @@ public class Bot extends TelegramLongPollingBot  {
                     message.setText("What settings would you like to change?");
                     break;
                 default:
-                    message.setText("Hello!");
+                    try {
+                        message.setText(Weather.getWeather(message_text, model));
+                    } catch (IOException e) {
+                        message.setText("City " + message_text + " not found.");
+                    }
                     break;
             }
 
@@ -70,8 +76,8 @@ public class Bot extends TelegramLongPollingBot  {
 
         //second line of the keyboard
         KeyboardRow keyboardSecondRow = new KeyboardRow();
-        keyboardSecondRow.add("Команда 3");
-        keyboardSecondRow.add("Команда 4");
+        keyboardSecondRow.add("Kyiv");
+        keyboardSecondRow.add("Turin");
 
         keyboardRows.add(keyboardFirstRow);
         keyboardRows.add(keyboardSecondRow);
